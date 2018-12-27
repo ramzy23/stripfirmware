@@ -23,16 +23,11 @@ CRGB leds[NUM_LEDS];
 //----------------------------Global variables----------------------------------//
 int brightness = DEFAULT_BRIGHTNESS;
 int current_colour = DEFAULT_COLOUR;
+volatile int current_mode = DEFAULT_MODE;
+int previousMode = 0;
+int time = millis();
 //-----------------------------------------------------------------------------------//
-//-----------------------------------Startup Notes-----------------------------------//
-/*
-	1. Assign LED array with LEDS
-	2. Turn off all LEDs!
-	3. Wait to ensure everything is ready
-	4. Fetch available stored data and assign it
-	5. If not set all default values
-*/
-//-----------------------------------------------------------------------------------//
+
 
 //--------------------------------Function Definitions-------------------------------//
 
@@ -56,12 +51,79 @@ void setup() {
 	delay(SAFETY_DELAY);
 	setBrightness();
 	colour();
+	pinMode(3, INPUT_PULLUP);
+	pinMode(2,INPUT_PULLUP);
+	attachInterrupt(digitalPinToInterrupt(3), modeDown, LOW);
+	attachInterrupt(digitalPinToInterrupt(2), modeUp, LOW);
 }
 
 void loop() {
-	eachRandomLed();
+	if (current_mode == previousMode){
+		
+	}
+	else{
+		switch (current_mode){
+			case 1:
+				colour(NUM_LEDS,DEFAULT_COLOUR);
+				break;
+			case 2:
+				colour(NUM_LEDS,Yellow);
+				break;
+			case 3:
+				colour(NUM_LEDS,Teal);
+				break;
+			case 4:
+				colour(NUM_LEDS,Green);
+				break;
+		}
+		sendData(current_mode,current_colour,brightness,previousMode);
+		previousMode = current_mode;
+		getName();
+		getLocation();
+		getSSID();
+		// printChipStorage();
+	}
 }
 
+void modeUp(){
+	Serial.print("Mode is ");
+	Serial.print(current_mode);
+	if (abs(time - millis()) < 1000){
+		return -1;
+	}
+	else {
+		time = millis();
+	}
+	current_mode++;
+	if (current_mode > 5) {
+		current_mode = 1;
+	}
+	Serial.print(" and is now ");
+	Serial.println(current_mode);
+
+
+}
+
+void modeDown(){
+	Serial.print("Mode is ");
+	Serial.print(current_mode);
+	
+	if (millis() < time + 1000){
+		return -1;
+	}
+	else {
+		time = millis();
+	}
+	current_mode--;
+	if (current_mode < 1) {
+		current_mode = 4;
+	}
+
+	Serial.print(" and is now ");
+	Serial.println(current_mode);
+
+	
+}
 
 //----------------------------Extra Functions-----------------------------------//
 
@@ -75,13 +137,14 @@ void blank(){
 
 //This will make a specific LED the colour specified by the CRGB Colour object. If no colour is passed into the function then DEFAULT_COLOUR is set.
 void colour(int led = NUM_LEDS, int color = DEFAULT_COLOUR){
+	current_colour = color;
 	if (led == NUM_LEDS){
 		for (int i = 0; i < NUM_LEDS; i++){
 			colour(i,color);
 		}
 	}
-	else{
-	leds[led] = color;
+	else {
+		leds[led] = color;
 	}
 	FastLED.show();
 }
