@@ -148,8 +148,10 @@ const int fullColourArray[142] = {AliceBlue, Amethyst, AntiqueWhite, Aqua, Aquam
 const int DEFAULT_COLOUR = CadetBlue;
 
 //-----------------------------------------------------------------------------------//
+//Pallets
 
-int testA[12] = {Green,GreenYellow,Teal,CadetBlue,Chocolate,Aqua,Green,GreenYellow,Teal,CadetBlue,Chocolate,Aqua};
+int rainbow[7] = {Red,Orange,Yellow,Green,Indigo,Violet};
+int testarr[7] = {White,Navy,PeachPuff,Yellow,Green,Black,Violet};
 
 //----------------------------------Time Definitions---------------------------------//
 

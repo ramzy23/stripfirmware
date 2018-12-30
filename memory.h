@@ -10,8 +10,6 @@ int lookup(int color){
     return -1;
 }
 
-
-
 int charToChipStorage(char value){
     return int(value);
 }
@@ -66,8 +64,6 @@ void getSSID(){
     }
     Serial.println(ssid);
 }
-
-//Dec-Q9K-Fkz-Kny
 
 int fetchData(){
     //Mode

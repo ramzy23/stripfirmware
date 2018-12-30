@@ -38,9 +38,10 @@ void fadeOut(int delayTime = DEFAULT_FADE_TIME);
 void breathe(int delayTime = DEFAULT_FADE_TIME);
 void slideRight(int col = DEFAULT_COLOUR,int slideDelay = DEFAULT_SLIDE_DELAY);
 void slideLeft(int col = DEFAULT_COLOUR,int slideDelay = DEFAULT_SLIDE_DELAY);
-void eachRandomLed(int delayTime = DEFAULT_SLIDE_DELAY);
+void eachRandomLed(int delayTime = DEFAULT_SLIDE_DELAY,int color[] = fullColourArray);
 void switchColour(int delayTime = DEFAULT_SWITCH_DELAY,int color = randomColour());
 void nightRider(int slideDelay = DEFAULT_SLIDE_DELAY);
+void strobe(int color = current_colour, int delayTime = DEFAULT_SWITCH_DELAY);
 
 //-----------------------------------------------------------------------------------//
 
@@ -50,7 +51,7 @@ void setup() {
 	blank();
 	delay(SAFETY_DELAY);
 	setBrightness();
-	colour();
+	// colour(NUM_LEDS,White);
 	pinMode(3, INPUT_PULLUP);
 	pinMode(2,INPUT_PULLUP);
 	attachInterrupt(digitalPinToInterrupt(3), modeDown, LOW);
@@ -58,31 +59,7 @@ void setup() {
 }
 
 void loop() {
-	if (current_mode == previousMode){
-		
-	}
-	else{
-		switch (current_mode){
-			case 1:
-				colour(NUM_LEDS,DEFAULT_COLOUR);
-				break;
-			case 2:
-				colour(NUM_LEDS,Yellow);
-				break;
-			case 3:
-				colour(NUM_LEDS,Teal);
-				break;
-			case 4:
-				colour(NUM_LEDS,Green);
-				break;
-		}
-		sendData(current_mode,current_colour,brightness,previousMode);
-		previousMode = current_mode;
-		getName();
-		getLocation();
-		getSSID();
-		// printChipStorage();
-	}
+	eachRandomLed(DEFAULT_SLIDE_DELAY,testarr);
 }
 
 void modeUp(){
@@ -240,10 +217,18 @@ void nightRider(int slideDelay = DEFAULT_SLIDE_DELAY){
 	slideRight(randomColour(),slideDelay);
 }
 
-void eachRandomLed(int delayTime = DEFAULT_SLIDE_DELAY){
-	for (int i = 0; i < NUM_LEDS; i ++){
-		colour(i,randomColour());
-		delay(delayTime);
+void eachRandomLed(int delayTime = DEFAULT_SLIDE_DELAY,int color[] = fullColourArray){
+	if (color[0] == fullColourArray[0]){
+		for (int i = 0; i < NUM_LEDS; i ++){
+			colour(i,randomColour());
+			delay(delayTime);
+		}
+	}
+	else {
+		for (int i = 0; i < 7;i++){
+			colour(i,color[i]);
+			delay(delayTime);
+		}
 	}
 }
 
@@ -253,3 +238,15 @@ void switchColour(int delayTime = DEFAULT_SWITCH_DELAY,int color = randomColour(
 }
 
 //-----------------------------------------------------------------------------------//
+
+
+void strobe(int color = current_colour, int delayTime = DEFAULT_SWITCH_DELAY){
+	colour(color);
+	delay(delayTime);
+	colour(Black);
+	delay(delayTime);
+}
+
+
+//Patterns
+//Alternating colours in row from pallet
